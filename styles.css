@@ -20,3 +20,32 @@
     position: relative;
     bottom: 25px;
 }
+
+#search-box{
+    width: 500px;
+    border: 2px solid black;
+    margin: 20px;
+    height: 800px;
+    border-radius: 7px;
+}
+
+#search-note{
+    width: 455px;
+    margin: 15px;
+    border: 1px solid black;
+    padding: 5px;
+    height: 30px;
+    font-size: 27px;
+    border-radius: 15px;
+}
+
+#search-note::placeholder{
+    color: black;
+    font-style: italic;
+}
+
+#search-dotted-line{
+    border: 1px dashed black;
+}
+
+
