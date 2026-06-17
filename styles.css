@@ -1,14 +1,14 @@
 #app-background{
     margin: 0;
     border: 0;
-    background: linear-gradient(to right, #f2f2f2, #e9e9e9);
+    background-color: rgb(26, 25, 25);
 }
 
 #title{
     font-family: 'Inter', serif;
     font-size: 40px;
     font-weight: normal;
-    color: black;
+    color: rgb(214, 209, 209);
     position: relative;
     left: 40px;
     bottom: 10px;
@@ -16,17 +16,18 @@
 
 #header-line{
     width: 100%;
-    border: 2px solid black;
+    border: 2px solid rgb(214, 209, 209);
     position: relative;
     bottom: 25px;
 }
 
 #search-box{
     width: 500px;
-    border: 2px solid black;
+    border: 2px solid white;
     margin: 20px;
     height: 800px;
     border-radius: 7px;
+    background-color: grey;
 }
 
 #search-note{
