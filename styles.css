@@ -6,22 +6,22 @@
 
 #title{
     font-family: 'Inter', serif;
-    font-size: 40px;
+    font-size: 44px;
     font-weight: normal;
-    color: rgb(214, 209, 209);
-    position: relative;
-    left: 40px;
-    bottom: 10px;
+    color: rgb(255, 255, 255);
+    display: flex;
+    align-items: center;
+    padding-left: 40px;
 }
 
 #header-line{
-    width: 100%;
+    width: 99%;
     border: 2px solid rgb(214, 209, 209);
-    position: relative;
-    bottom: 25px;
+    display:flex;
+    align-items: center;
 }
 
-#search-box{
+#note-name-box{
     width: 500px;
     border: 2px solid white;
     margin: 20px;
@@ -30,7 +30,7 @@
     background-color: grey;
 }
 
-#search-note{
+#search-bar{
     width: 455px;
     margin: 15px;
     border: 1px solid black;
@@ -45,8 +45,23 @@
     font-style: italic;
 }
 
-#search-dotted-line{
-    border: 1px dashed black;
+#scrollable-note-names{
+    /* white-space: nowrap; */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 435px;
+    /* border: 1px solid white; */
+    padding: 20px;
+    margin: 10px;
+    height: 650px;
+    overflow-y: auto;
+    overflow: scroll;
+}
+
+#scrollable-note-names button{
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
