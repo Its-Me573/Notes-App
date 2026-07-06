@@ -1,17 +1,5 @@
-var arr = [
-    "one",
-    "two",
-    "three"
-];
+import * as helper from "./helper.js"
 
-var ul = document.getElementById("scrollable-note-names");
-var note_index = 0;
-arr.forEach(function(e){
-    var list = document.createElement("button");
-    var node = document.createTextNode(arr[note_index]);
-    list.appendChild(node);
+helper.updateList(document.getElementById("scrollable-note-names"), "button");
 
-    ul.appendChild(list);
-    console.log(list);
-    note_index++;
-})
+
