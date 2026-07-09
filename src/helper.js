@@ -13,7 +13,7 @@ export async function returnAllNoteNames() {
         const returnArr = [];
         
         result.forEach((item) => {
-            returnArr.push(item.note_name);
+            returnArr.push(item);
         });
 
         return returnArr;
@@ -28,13 +28,23 @@ export async function updateList(container, tagName){
         let noteNames = await returnAllNoteNames();
 
         noteNames.forEach(function(item){
-            const element = document.createElement(tagName);
-            const node = document.createTextNode(item);
-            element.appendChild(node);
-            container.appendChild(element);
+            //Elements to be appended to an existing HTML container
+            const nameElement = document.createElement(tagName);
+            const dateModifiedElement = document.createElement("h6");
+
+            const nameNode = document.createTextNode(item.note_name );
+            const dateModifiedNode = document.createTextNode("Date Modified: " + item.date_modified);
+
+            nameElement.appendChild(nameNode);
+            dateModifiedElement.appendChild(dateModifiedNode);
+
+
+            container.appendChild(nameElement);
+            container.appendChild(dateModifiedElement);
         })
     }catch(error){
         console.log(error.message);
         return [];
     }
 }
+
