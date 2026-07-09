@@ -38,10 +38,11 @@
     height: 800px;
     border-radius: 7px;
     background-color: #808080;
+    overscroll-behavior-x: none;
 }
 
 #search-bar{
-    width: 455px;
+    width: 440px;
     margin: 15px;
     border: 1px solid black;
     padding: 5px;
@@ -65,11 +66,12 @@
     margin: 10px;
     height: 650px;
     overflow-y: auto;
+    
     overflow: scroll;
 }
 
 #scrollable-note-names button{
-    width: 100%;
+    width: 99%;
     height: 55px;
     margin: 2px;
     font-size: 15px;
@@ -88,6 +90,7 @@
     position: relative;
     bottom: 20px;
     left: 160px;
+    width: 150px;
 }
 
 

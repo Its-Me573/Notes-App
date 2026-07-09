@@ -1,8 +1,9 @@
-const port = "http://127.0.0.1:8000";
+import * as config from "../config.js";
+
 
 export async function returnAllNoteNames() {
     try{
-        const url = port + "/notes";
+        const url = config.baseURL + "/notes";
         const response = await fetch(url);
 
         if(!response.ok){
