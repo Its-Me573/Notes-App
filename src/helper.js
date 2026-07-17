@@ -1,6 +1,11 @@
 import * as config from "../config.js";
 import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.4.1/dist/fuse.mjs'
 
+export async function initializeApp () {
+    listLiveUpdate(document.getElementById("scrollable-note-names"), await returnAllNoteNames())
+}
+
+//api connection
 export async function returnAllNoteNames () {
     try{
         const url = config.baseURL + "/notes";
@@ -24,13 +29,17 @@ export async function returnAllNoteNames () {
     }
 }
 
-export async function updateList (container, tagName) {
-    try{
-        let noteNames = await returnAllNoteNames();
+//will be used to update the contents of the list of notes on the left of the screen
+//take in the notes as a promise
+//will not take any parameters since this will have a single function which is updating the list properly
 
-        noteNames.forEach (function(item) {
-            //Elements to be appended to an existing HTML container
-            const nameElement = document.createElement(tagName);
+//update the contents of the list with information provided to the function
+export async function listLiveUpdate (container, listOfNotes) {
+    try {
+        listOfNotes.forEach(function(item) {
+            const nameElement = document.createElement("button");
+            nameElement.setAttribute("note", item.note_name);
+
             const dateModifiedElement = document.createElement("h6");
 
             const nameNode = document.createTextNode(item.note_name);
@@ -39,15 +48,15 @@ export async function updateList (container, tagName) {
             nameElement.appendChild(nameNode);
             dateModifiedElement.appendChild(dateModifiedNode);
 
-
             container.appendChild(nameElement);
             container.appendChild(dateModifiedElement);
         })
-    }catch (error) {
+    }catch(error) {
         console.log(error.message);
         return [];
     }
 }
+
 
 export async function clearNoteList () {
     const parent = document.getElementById("scrollable-note-names");
@@ -56,6 +65,7 @@ export async function clearNoteList () {
     }
 }
 
+//this function is written horribly. live update list should
 export async function liveUpdateList () {
     try{
         const input = document.querySelector("input");
@@ -80,6 +90,9 @@ export async function liveUpdateList () {
                 //create new elements to append
                 const nameElement = document.createElement("button");
                 const dateModifiedElement = document.createElement("h6");
+
+                //set the button to store the note and the name of the note
+                nameElement.setAttribute("note", item.note_name);
 
                 //create text nodes
                 const nameNode = document.createTextNode(object.item.note_name);
