@@ -1,10 +1,6 @@
 import * as config from "../config.js";
 import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.4.1/dist/fuse.mjs'
 
-export async function initializeApp () {
-    listLiveUpdate(document.getElementById("scrollable-note-names"), await returnAllNoteNames())
-}
-
 //api connection
 export async function returnAllNoteNames () {
     try{
@@ -29,14 +25,24 @@ export async function returnAllNoteNames () {
     }
 }
 
-//will be used to update the contents of the list of notes on the left of the screen
-//take in the notes as a promise
-//will not take any parameters since this will have a single function which is updating the list properly
+//app initialization
+//refreshes list of note names
+export async function initializeApp () {
+    let listOfNotes = await returnAllNoteNames();
+    renderList(listOfNotes);
+}
 
-//update the contents of the list with information provided to the function
-export async function listLiveUpdate (container, listOfNotes) {
+export function clearNoteListUI () {
+    const parent = document.getElementById("scrollable-note-names");
+
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
+
+export function renderList (listOfNotes) {
     try {
-        listOfNotes.forEach(function(item) {
+        listOfNotes.forEach((item) => {
             const nameElement = document.createElement("button");
             nameElement.setAttribute("note", item.note_name);
 
@@ -48,6 +54,8 @@ export async function listLiveUpdate (container, listOfNotes) {
             nameElement.appendChild(nameNode);
             dateModifiedElement.appendChild(dateModifiedNode);
 
+            const container = document.getElementById("scrollable-note-names")
+
             container.appendChild(nameElement);
             container.appendChild(dateModifiedElement);
         })
@@ -57,62 +65,22 @@ export async function listLiveUpdate (container, listOfNotes) {
     }
 }
 
+//input the searchInput to find the result in the noteNames array
+export function fuzzySearchResult (searchInput, noteNames) {
+    const fuse = new Fuse(noteNames, {
+        threshold: 0.2,
+        keys: ["note_name"]
+    });
 
-export async function clearNoteList () {
-    const parent = document.getElementById("scrollable-note-names");
-    while (parent.firstChild) {
-        parent.removeChild(parent.firstChild);
-    }
-}
+    const result = fuse.search(searchInput);
 
-//this function is written horribly. live update list should
-export async function liveUpdateList () {
-    try{
-        const input = document.querySelector("input");
-        const log = document.getElementById("search-box");
+    let normalizedArr = [];
 
-        let allNoteNames = await returnAllNoteNames();
-
-        //listen for a text input
-        input.addEventListener("input", function (e) {
-            const fuse = new Fuse(allNoteNames, {
-                threshold: 0.2,
-                keys: ["note_name"]
-            });
-
-            const results = fuse.search(e.target.value);
-
-            //clear all note buttons in the list for refresh
-            clearNoteList();
-
-            //append notes
-            results.forEach(function(object) {                
-                //create new elements to append
-                const nameElement = document.createElement("button");
-                const dateModifiedElement = document.createElement("h6");
-
-                //set the button to store the note and the name of the note
-                nameElement.setAttribute("note", item.note_name);
-
-                //create text nodes
-                const nameNode = document.createTextNode(object.item.note_name);
-                const dateModifiedNode = document.createTextNode("Date Modified: " + object.item.date_modified);
-
-                const list = document.getElementById("scrollable-note-names");
-
-                //append text nodes into created elements
-                nameElement.appendChild(nameNode);
-                dateModifiedElement.appendChild(dateModifiedNode);
-
-                //append elements into the list
-                list.appendChild(nameElement);
-                list.appendChild(dateModifiedElement);
-            })
-        })
-    }catch (error) {
-        console.log(error.message);
-        return [];
-    }
+    result.forEach((item) => {
+        normalizedArr.push(item.item);
+    })
+    
+    return normalizedArr;
 }
 
 
