@@ -60,18 +60,18 @@
     /* white-space: nowrap; */
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 435px;
+    width: 470px;
     /* border: 1px solid white; */
-    padding: 20px;
+    padding: 5px;
     margin: 10px;
-    height: 650px;
+    height: 690px;
     overflow-y: auto;
     
     overflow: scroll;
 }
 
-#scrollable-note-names button{
-    width: 99%;
+#scrollable-note-names .note-button{
+    width: 87%;
     height: 55px;
     margin: 2px;
     font-size: 15px;
@@ -89,8 +89,31 @@
     border: 0;
     position: relative;
     bottom: 20px;
+    left: 152px;
+    width: 150px;
+}
+
+#no-matching-results h2{
+    position: relative;
+    bottom: 20px;
     left: 160px;
     width: 150px;
 }
+
+#scrollable-note-names .delete-note-button {
+    width: 40px;
+    height: 40px;
+    margin: 4px;
+    padding: 10px;
+    padding-bottom: 29px;
+    cursor: pointer;
+    position: relative;
+    top: 14px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    outline: none;
+    border: none;
+}
+
 
 

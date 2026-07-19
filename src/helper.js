@@ -43,21 +43,32 @@ export function clearNoteListUI () {
 export function renderList (listOfNotes) {
     try {
         listOfNotes.forEach((item) => {
-            const nameElement = document.createElement("button");
-            nameElement.setAttribute("note", item.note_name);
+            const notesContainer = document.getElementById("scrollable-note-names");
 
-            const dateModifiedElement = document.createElement("h6");
+            const noteButtonElement = document.createElement("button");
+            const buttonName = document.createTextNode(item.note_name);
+            noteButtonElement.setAttribute("note", item.note_name);
+            noteButtonElement.setAttribute("class", "note-button");
+            noteButtonElement.appendChild(buttonName);
 
-            const nameNode = document.createTextNode(item.note_name);
-            const dateModifiedNode = document.createTextNode("Date Modified: " + item.date_modified);
 
-            nameElement.appendChild(nameNode);
-            dateModifiedElement.appendChild(dateModifiedNode);
+            const dateHeader = document.createElement("h6");
+            const dateModifiedText = document.createTextNode("Date Modified: " + item.date_modified);
+            dateHeader.setAttribute("class", "date-modified-header");
+            dateHeader.appendChild(dateModifiedText);
 
-            const container = document.getElementById("scrollable-note-names")
+            const deleteNoteButton = document.createElement("button");
+            const deleteNoteIcon = document.createElement("img");
+            deleteNoteIcon.src = "../images/trash-2.png";
+            deleteNoteButton.setAttribute("class", "delete-note-button");
+            deleteNoteButton.setAttribute("delete-note", item.note_name);
+            deleteNoteButton.appendChild(deleteNoteIcon);
+            
+            
 
-            container.appendChild(nameElement);
-            container.appendChild(dateModifiedElement);
+            notesContainer.appendChild(noteButtonElement);
+            notesContainer.appendChild(deleteNoteButton);
+            notesContainer.appendChild(dateHeader);
         })
     }catch(error) {
         console.log(error.message);
@@ -68,7 +79,7 @@ export function renderList (listOfNotes) {
 //input the searchInput to find the result in the noteNames array
 export function fuzzySearchResult (searchInput, noteNames) {
     const fuse = new Fuse(noteNames, {
-        threshold: 0.2,
+        threshold: 0.3,
         keys: ["note_name"]
     });
 
