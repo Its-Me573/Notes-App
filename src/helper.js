@@ -3,7 +3,7 @@ import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.4.1/dist/fuse.mjs'
 
 //api connection
 export async function returnAllNoteNames () {
-    try{
+    try {
         const url = config.baseURL + "/notes";
         const response = await fetch(url);
 
@@ -20,7 +20,24 @@ export async function returnAllNoteNames () {
 
         return returnArr;
 
-    }catch (error) {
+    }catch(error) {
+        console.error(error.message);
+    }
+}
+
+//api delete note
+export async function deleteNote (targetNote) {
+    try {
+        const url = config.baseURL + "/note/" + targetNote;
+
+        const response = await fetch(url, {
+            method: "DELETE",
+        })
+
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+    }catch(error) {
         console.error(error.message);
     }
 }
@@ -45,18 +62,20 @@ export function renderList (listOfNotes) {
         listOfNotes.forEach((item) => {
             const notesContainer = document.getElementById("scrollable-note-names");
 
+            //create button for viewing notes
             const noteButtonElement = document.createElement("button");
             const buttonName = document.createTextNode(item.note_name);
             noteButtonElement.setAttribute("note", item.note_name);
             noteButtonElement.setAttribute("class", "note-button");
             noteButtonElement.appendChild(buttonName);
 
-
+            //create header showing a notes recent modified date
             const dateHeader = document.createElement("h6");
             const dateModifiedText = document.createTextNode("Date Modified: " + item.date_modified);
             dateHeader.setAttribute("class", "date-modified-header");
             dateHeader.appendChild(dateModifiedText);
 
+            //create button to delete a certain note
             const deleteNoteButton = document.createElement("button");
             const deleteNoteIcon = document.createElement("img");
             deleteNoteIcon.src = "../images/trash-2.png";
@@ -64,8 +83,7 @@ export function renderList (listOfNotes) {
             deleteNoteButton.setAttribute("target-note", item.note_name);
             deleteNoteButton.appendChild(deleteNoteIcon);
             
-            
-
+            //append all notes to the notesContainer
             notesContainer.appendChild(noteButtonElement);
             notesContainer.appendChild(deleteNoteButton);
             notesContainer.appendChild(dateHeader);
