@@ -61,7 +61,7 @@ export function renderList (listOfNotes) {
             const deleteNoteIcon = document.createElement("img");
             deleteNoteIcon.src = "../images/trash-2.png";
             deleteNoteButton.setAttribute("class", "delete-note-button");
-            deleteNoteButton.setAttribute("delete-note", item.note_name);
+            deleteNoteButton.setAttribute("target-note", item.note_name);
             deleteNoteButton.appendChild(deleteNoteIcon);
             
             
@@ -92,6 +92,21 @@ export function fuzzySearchResult (searchInput, noteNames) {
     })
     
     return normalizedArr;
+}
+
+export function showDeleteNoteDialog() {
+   const dialog = document.getElementById("delete-note-dialog");
+   dialog.showModal();
+}
+
+export function changeDeleteNoteDialogAttribute(noteName) {
+    const dialog = document.getElementById("delete-note-button");
+    dialog.setAttribute("data-type", noteName);
+}
+
+export function closeDeleteNoteDialog() {
+   const dialog = document.getElementById("delete-note-dialog");
+   dialog.close();
 }
 
 
