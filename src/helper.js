@@ -45,7 +45,21 @@ export async function deleteNote (targetNote) {
 //refresh note list UI
 export async function refreshNotesUI() {
     let listOfNotes = await returnAllNoteNames();
-    renderList(listOfNotes);
+    // console.log(listOfNotes.length);
+
+    if(listOfNotes.length === 0 ) {
+        //append image to the scrollable note names container
+        const notesContainer = document.getElementById("scrollable-note-names");
+        
+        const noNotesMessage = document.createElement("h1");
+        const message = document.createTextNode("No Notes Yet");
+        noNotesMessage.appendChild(message);
+
+        notesContainer.setAttribute("id", "no-notes");
+        notesContainer.appendChild(noNotesMessage);
+    }else {
+        renderList(listOfNotes);
+    }
 }
 
 //app initialization
