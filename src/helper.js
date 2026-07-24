@@ -42,11 +42,16 @@ export async function deleteNote (targetNote) {
     }
 }
 
-//app initialization
-//refreshes list of note names
-export async function initializeApp () {
+//refresh note list UI
+export async function refreshNotesUI() {
     let listOfNotes = await returnAllNoteNames();
     renderList(listOfNotes);
+}
+
+//app initialization
+//refreshes list of note names
+export function initializeApp () {
+    refreshNotesUI();
 }
 
 export function clearNoteListUI () {
@@ -117,6 +122,7 @@ export function showDeleteNoteDialog() {
    dialog.showModal();
 }
 
+//change attribute of the delete button for delete event listener
 export function changeDeleteNoteDialogAttribute(noteName) {
     const dialog = document.getElementById("delete-note-button");
     dialog.setAttribute("data-type", noteName);

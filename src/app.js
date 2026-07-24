@@ -54,7 +54,17 @@ document.querySelectorAll(".close-delete-dialog").forEach((button) => {
 })
 
 //event listener to delete the current note that the user has picked
-document.getElementById("delete-note-button").addEventListener("click", (e) => {
+document.getElementById("delete-note-button").addEventListener("click", async (e) => {
     let targetNote = document.getElementById("delete-note-button").getAttribute("data-type"); 
     
+    helper.deleteNote(targetNote)
+    .then(() => {
+        helper.closeDeleteNoteDialog();
+    })
+    .then(() => {
+        helper.clearNoteListUI();
+    })
+    .then(() => {
+        helper.refreshNotesUI();
+    })
 })
