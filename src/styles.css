@@ -1,96 +1,193 @@
 #app-background{
-    margin: 0;
-    border: 0;
-    padding: 0;
-    background-color: rgb(26, 25, 25);
+   margin: 0;
+   border: 0;
+   padding: 0;
+   background-color: rgb(26, 25, 25);
 }
+
 
 #navbar{
-    width: 50;
-    border: 0px;
-    padding: 0px;
-    margin: 0px;
-    padding-top: 1px;
-    background-color: #808080;
+   width: 50;
+   border: 0px;
+   padding: 0px;
+   margin: 0px;
+   padding-top: 1px;
+   background-color: #808080;
 }
+
 
 #title{
-    font-family: 'Inter', serif;
-    font-size: 44px;
-    font-weight: normal;
-    color: rgb(255, 255, 255);
-    display: flex;
-    align-items: center;
-    padding-left: 40px;
+   font-family: 'Inter', serif;
+   font-size: 44px;
+   font-weight: normal;
+   color: rgb(255, 255, 255);
+   display: flex;
+   align-items: center;
+   padding-left: 40px;
 }
+
 
 #header-line{
-    width: 99%;
-    border: 2px solid rgb(255, 255, 255);
-    display:flex;
-    align-items: center;
+   width: 99%;
+   border: 2px solid rgb(255, 255, 255);
+   display:flex;
+   align-items: center;
 }
+
 
 #note-name-box{
-    width: 500px;
-    border: 2px solid white;
-    margin: 20px;
-    height: 800px;
-    border-radius: 7px;
-    background-color: #808080;
-    overscroll-behavior-x: none;
+   width: 500px;
+   border: 2px solid white;
+   margin: 20px;
+   height: 800px;
+   border-radius: 7px;
+   background-color: #808080;
+   overscroll-behavior-x: none;
 }
+
 
 #search-bar{
-    width: 440px;
-    margin: 15px;
-    border: 1px solid black;
-    padding: 5px;
-    height: 30px;
-    font-size: 27px;
-    border-radius: 15px;
+   width: 440px;
+   margin: 15px;
+   border: 1px solid black;
+   padding: 5px;
+   height: 30px;
+   font-size: 27px;
+   border-radius: 15px;
 }
+
 
 #search-note::placeholder{
-    color: black;
-    font-style: italic;
+   color: black;
+   font-style: italic;
 }
+
 
 #scrollable-note-names{
-    /* white-space: nowrap; */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 435px;
-    /* border: 1px solid white; */
-    padding: 20px;
-    margin: 10px;
-    height: 650px;
-    overflow-y: auto;
-    
-    overflow: scroll;
+   /* white-space: nowrap; */
+   overflow: hidden;
+   text-overflow: ellipsis;
+   width: 470px;
+   /* border: 1px solid white; */
+   padding: 5px;
+   margin: 10px;
+   height: 700px;
+   overflow-y: auto;
+  
+   overflow: scroll;
 }
 
-#scrollable-note-names button{
-    width: 99%;
-    height: 55px;
-    margin: 2px;
-    font-size: 15px;
-    font-family: 'Inter', serif;
-    font-weight: 500;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    cursor:pointer;
-    padding-bottom: 20px;
+
+#scrollable-note-names .note-button{
+   width: 87%;
+   height: 55px;
+   margin: 2px;
+   font-size: 15px;
+   font-family: 'Inter', serif;
+   font-weight: 500;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   cursor:pointer;
+   padding-bottom: 20px;
 }
+
 
 #scrollable-note-names h6{
-    padding: 0;
-    margin: 0;
-    border: 0;
-    position: relative;
-    bottom: 20px;
-    left: 160px;
-    width: 150px;
+   padding: 0;
+   margin: 0;
+   border: 0;
+   position: relative;
+   bottom: 20px;
+   left: 152px;
+   width: 150px;
 }
 
 
+#no-matching-results h2{
+   position: relative;
+   bottom: 20px;
+   left: 160px;
+   width: 150px;
+}
+
+
+#scrollable-note-names .delete-note-button {
+   width: 40px;
+   height: 40px;
+   margin: 4px;
+   padding: 10px;
+   padding-bottom: 29px;
+   cursor: pointer;
+   position: relative;
+   top: 14px;
+   background-color: transparent;
+   background-repeat: no-repeat;
+   outline: none;
+   border: none;
+}
+
+
+#delete-note-dialog {
+   padding: 0;
+   /* border-radius: 15px; */
+   border-color: black;
+   background-color: rgb(196, 194, 194);
+   color: black;
+   height: 100px;
+   height: 120px
+}
+
+
+#delete-note-dialog::backdrop {
+   background: rgba(255, 255, 255, 0.25);
+}
+
+
+#dialog-header {
+   padding: 7px;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   border-bottom: 1px solid black;
+   margin: 0;
+}
+
+
+#dialog-title {
+   font-size: 20px;
+   font-weight: bold;
+}
+
+
+#close-button {
+   background: transparent;
+   border: none;
+   font-size: 25px;
+   font-weight: bold;
+   cursor: pointer;
+}
+
+
+#dialog-body {
+   padding: 4px;   
+}
+
+
+#delete-selection-buttons {
+   padding: 3px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+
+#delete-selection-buttons button {
+   width: 110px;
+   height: 30px;
+   font-size: 20px;
+   font-weight: bold;
+   margin: 2px;
+   cursor: pointer;
+   background-color: white;
+   border-color: black;
+}

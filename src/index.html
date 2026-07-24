@@ -1,28 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
+  
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notes App</title>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Notes App</title>
 
-    <link rel="stylesheet" href="./styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" 
-    rel="stylesheet">
 
+   <link rel="stylesheet" href="./styles.css">
+   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+   rel="stylesheet">
 </head>
+
+
 <body id="app-background">
+   <header id = "navbar">
+       <h1 id = "title">Notes</h1>
+       <hr id = "header-line">
+   </header>
+
+
+   <div id = "note-name-box">
+       <input type = "text" id = "search-bar" placeholder= "🔍search note">
+       <div id = "scrollable-note-names"></div>
+   </div>
+
+       <dialog id = "delete-note-dialog">
+           <div id = "dialog-header">
+               <div id = dialog-title>Delete Note?</div>
+               <button class = "close-delete-dialog" id = "close-button">&times;</button>
+           </div>
+
+
+           <div id = "dialog-body">
+               <div id = "delete-warning">Are you sure you want to delete this note? This action can't be undone.</div>
+           </div>
+
+
+           <div id = "delete-selection-buttons">
+               <button id = "delete-note-button">Delete</button>
+               <button id = "cancel-button" class = "close-delete-dialog">Cancel</button>
+           </div>
+       </dialog>
+
     
-    <header id = "navbar">
-        <h1 id = "title">Notes</h1>
-        <hr id = "header-line">
-    </header>
-
-    <div id = "note-name-box">
-        <input type = "text" id = "search-bar" placeholder= "🔍search note">
-        <div id = "scrollable-note-names"></div>
-    </div>
-
+    
     <script type = "module" src = "./app.js"></script>
-
 </body>
+
+
 </html>

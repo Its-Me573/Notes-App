@@ -1,8 +1,9 @@
 import * as config from "../config.js";
 import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.4.1/dist/fuse.mjs'
 
+//api connection
 export async function returnAllNoteNames () {
-    try{
+    try {
         const url = config.baseURL + "/notes";
         const response = await fetch(url);
 
@@ -19,87 +20,117 @@ export async function returnAllNoteNames () {
 
         return returnArr;
 
-    }catch (error) {
+    }catch(error) {
         console.error(error.message);
     }
 }
 
-export async function updateList (container, tagName) {
-    try{
-        let noteNames = await returnAllNoteNames();
+//api delete note
+export async function deleteNote (targetNote) {
+    try {
+        const url = config.baseURL + "/note/" + targetNote;
 
-        noteNames.forEach (function(item) {
-            //Elements to be appended to an existing HTML container
-            const nameElement = document.createElement(tagName);
-            const dateModifiedElement = document.createElement("h6");
-
-            const nameNode = document.createTextNode(item.note_name);
-            const dateModifiedNode = document.createTextNode("Date Modified: " + item.date_modified);
-
-            nameElement.appendChild(nameNode);
-            dateModifiedElement.appendChild(dateModifiedNode);
-
-
-            container.appendChild(nameElement);
-            container.appendChild(dateModifiedElement);
+        const response = await fetch(url, {
+            method: "DELETE",
         })
-    }catch (error) {
-        console.log(error.message);
-        return [];
+
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+    }catch(error) {
+        console.error(error.message);
     }
 }
 
-export async function clearNoteList () {
+//refresh note list UI
+export async function refreshNotesUI() {
+    let listOfNotes = await returnAllNoteNames();
+    renderList(listOfNotes);
+}
+
+//app initialization
+//refreshes list of note names
+export function initializeApp () {
+    refreshNotesUI();
+}
+
+export function clearNoteListUI () {
     const parent = document.getElementById("scrollable-note-names");
+
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
     }
 }
 
-export async function liveUpdateList () {
-    try{
-        const input = document.querySelector("input");
-        const log = document.getElementById("search-box");
+export function renderList (listOfNotes) {
+    try {
+        listOfNotes.forEach((item) => {
+            const notesContainer = document.getElementById("scrollable-note-names");
 
-        let allNoteNames = await returnAllNoteNames();
+            //create button for viewing notes
+            const noteButtonElement = document.createElement("button");
+            const buttonName = document.createTextNode(item.note_name);
+            noteButtonElement.setAttribute("note", item.note_name);
+            noteButtonElement.setAttribute("class", "note-button");
+            noteButtonElement.appendChild(buttonName);
 
-        //listen for a text input
-        input.addEventListener("input", function (e) {
-            const fuse = new Fuse(allNoteNames, {
-                threshold: 0.2,
-                keys: ["note_name"]
-            });
+            //create header showing a notes recent modified date
+            const dateHeader = document.createElement("h6");
+            const dateModifiedText = document.createTextNode("Date Modified: " + item.date_modified);
+            dateHeader.setAttribute("class", "date-modified-header");
+            dateHeader.appendChild(dateModifiedText);
 
-            const results = fuse.search(e.target.value);
-
-            //clear all note buttons in the list for refresh
-            clearNoteList();
-
-            //append notes
-            results.forEach(function(object) {                
-                //create new elements to append
-                const nameElement = document.createElement("button");
-                const dateModifiedElement = document.createElement("h6");
-
-                //create text nodes
-                const nameNode = document.createTextNode(object.item.note_name);
-                const dateModifiedNode = document.createTextNode("Date Modified: " + object.item.date_modified);
-
-                const list = document.getElementById("scrollable-note-names");
-
-                //append text nodes into created elements
-                nameElement.appendChild(nameNode);
-                dateModifiedElement.appendChild(dateModifiedNode);
-
-                //append elements into the list
-                list.appendChild(nameElement);
-                list.appendChild(dateModifiedElement);
-            })
+            //create button to delete a certain note
+            const deleteNoteButton = document.createElement("button");
+            const deleteNoteIcon = document.createElement("img");
+            deleteNoteIcon.src = "../images/trash-2.png";
+            deleteNoteButton.setAttribute("class", "delete-note-button");
+            deleteNoteButton.setAttribute("target-note", item.note_name);
+            deleteNoteButton.appendChild(deleteNoteIcon);
+            
+            //append all notes to the notesContainer
+            notesContainer.appendChild(noteButtonElement);
+            notesContainer.appendChild(deleteNoteButton);
+            notesContainer.appendChild(dateHeader);
         })
-    }catch (error) {
+    }catch(error) {
         console.log(error.message);
         return [];
     }
+}
+
+//input the searchInput to find the result in the noteNames array
+export function fuzzySearchResult (searchInput, noteNames) {
+    const fuse = new Fuse(noteNames, {
+        threshold: 0.3,
+        keys: ["note_name"]
+    });
+
+    const result = fuse.search(searchInput);
+
+    let normalizedArr = [];
+
+    result.forEach((item) => {
+        normalizedArr.push(item.item);
+    })
+    
+    return normalizedArr;
+}
+
+export function showDeleteNoteDialog() {
+   const dialog = document.getElementById("delete-note-dialog");
+   dialog.showModal();
+}
+
+//change attribute of the delete button for delete event listener
+export function changeDeleteNoteDialogAttribute(noteName) {
+    const dialog = document.getElementById("delete-note-button");
+    dialog.setAttribute("data-type", noteName);
+}
+
+export function closeDeleteNoteDialog() {
+   const dialog = document.getElementById("delete-note-dialog");
+   dialog.close();
 }
 
 
