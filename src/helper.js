@@ -74,6 +74,7 @@ export async function createNote (newNoteName) {
     }
 }
 
+
 function getCurrentDateAndTime() {
     const date = new Date();
     const hours = date.getHours();

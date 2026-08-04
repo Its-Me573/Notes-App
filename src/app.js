@@ -2,8 +2,7 @@ import * as helper from "./helper.js";
 
 helper.initializeApp();
 
-//helper.createNote("Date and time");
-
+helper.showDialog("create-note-dialog");
 
 //Listener that reads the search bar input and then prints the notes that are closest to that note searched
 document.getElementById("search-bar").addEventListener("input", async (e) => {

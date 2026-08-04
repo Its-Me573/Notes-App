@@ -6,11 +6,13 @@
    padding: 0;
 }
 
+
 #navbar{
    background-color: #808080;
 
    padding-top: 1px;
 }
+
 
 #title{
    color: rgb(255, 255, 255);
@@ -24,6 +26,7 @@
    font-weight: normal;
 }
 
+
 #header-line{
    display:flex;
    align-items: center;
@@ -32,6 +35,7 @@
 
    border: 2px solid rgb(255, 255, 255);
 }
+
 
 #note-name-box{
    background-color: #808080;
@@ -46,6 +50,7 @@
    overscroll-behavior-x: none;
 }
 
+
 #search-bar{
    width: 420px;
    height: 30px;
@@ -58,10 +63,12 @@
    font-size: 27px;
 }
 
+
 #search-note::placeholder{
    color: black;
    font-style: italic;
 }
+
 
 #scrollable-note-names{
    width: 470px;
@@ -76,10 +83,12 @@
    text-overflow: ellipsis;
 }
 
+
 #scrollable-note-names .note-button{
    width: 87%;
    height: 55px;
 
+   
    margin: 2px;
    padding-bottom: 20px;
 
@@ -89,9 +98,11 @@
    
    overflow: hidden;
    text-overflow: ellipsis;
-   
+   text-wrap: nowrap;   
+
    cursor:pointer;
 }
+
 
 #scrollable-note-names h6{
    width: 200px;
@@ -105,6 +116,7 @@
    left: 125px;
 }
 
+
 #no-matching-results h2{
    width: 150px;
    
@@ -112,6 +124,7 @@
    bottom: 20px;
    left: 160px;
 }
+
 
 #scrollable-note-names .delete-note-button {
    width: 40px;
@@ -132,6 +145,7 @@
    cursor: pointer;
 }
 
+
 #delete-note-dialog {
    height: 120px;
    
@@ -142,11 +156,29 @@
    background-color: rgb(196, 194, 194);
 }
 
+
+#create-note-dialog {
+   height: 150px;
+   width: 500px;
+   padding: 0;
+
+   color: black;
+   border-color: black;
+   background-color: rgb(196, 194, 194);
+}
+
+
 #delete-note-dialog::backdrop {
    background: rgba(255, 255, 255, 0.25);
 }
 
-#dialog-header {
+
+#create-note-dialog::backdrop {
+   background: rgba(255, 255, 255, 0.25);
+}
+
+
+#delete-note-dialog .dialog-header {
    padding: 7px;
    margin: 0;  
 
@@ -157,12 +189,32 @@
    border-bottom: 1px solid black;
 }
 
-#dialog-title {
+
+#create-note-dialog .dialog-header {
+   padding: 7px;
+   margin: 0;  
+
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   
+   border-bottom: 1px solid black;
+}
+
+
+#delete-note-dialog .dialog-title {
    font-size: 20px;
    font-weight: bold;
 }
 
-#close-button {
+
+#create-note-dialog .dialog-title {
+   font-size: 20px;
+   font-weight: bold;
+}
+
+
+#delete-note-dialog .dialog-header .close-dialog {
    background: transparent;
    border: none;
    
@@ -172,11 +224,29 @@
    cursor: pointer;
 }
 
-#dialog-body {
+
+#create-note-dialog .dialog-header .close-dialog {
+   background: transparent;
+   border: none;
+   
+   font-size: 25px;
+   font-weight: bold;
+   
+   cursor: pointer;
+}
+
+
+#delete-note-dialog .dialog-body {
    padding: 4px;   
 }
 
-#delete-selection-buttons {
+
+#create-note-dialog .dialog-body {
+   padding: 4px;
+}
+
+
+#delete-note-dialog .delete-selection-buttons {
    padding: 3px;
    
    display: flex;
@@ -184,7 +254,29 @@
    justify-content: center;
 }
 
-#delete-selection-buttons button {
+#create-note-dialog .delete-selection-buttons {
+   padding: 3px;
+   
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+
+#create-note-dialog .create-note-input {
+   width: 478px;
+   height: 30px;
+
+   margin: 3px;
+
+   border-color: black;
+   border-radius: 2px;
+
+   font-size: 18px;
+}
+
+
+#delete-note-dialog .delete-selection-buttons button {
    width: 110px;
    height: 30px;
    
@@ -199,6 +291,22 @@
    cursor: pointer;
 }
 
+#create-note-dialog .delete-selection-buttons button {
+   width: 110px;
+   height: 30px;
+   
+   font-size: 20px;
+   font-weight: bold;
+
+   margin: 2px;
+   
+   background-color: white;
+   border-color: black;
+
+   cursor: pointer;
+}
+
+
 #no-notes {
    font-weight: bold;
    font-size: 25px;
@@ -208,11 +316,13 @@
    left: 90px;
 }
 
+
 #notes-search-addition {
    display: flex;
    align-items: center;
    justify-content:space-between;
 }
+
 
 #add-note-button {
    display: flex;
