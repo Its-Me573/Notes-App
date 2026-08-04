@@ -45,9 +45,9 @@ document.getElementById("scrollable-note-names").addEventListener("click", (e) =
     }else if(buttonPressed.getAttribute("class") === "delete-note-button"){
 
         //change attributes of the dialog to store the target note for deletion
-        helper.modifyContainerAttribute("delete-note-button",
-                                        "data-type",
-                                        buttonPressed.getAttribute("target-note") )
+        helper.modifyElementAttribute("delete-note-button",
+                                      "data-type",
+                                      buttonPressed.getAttribute("target-note") )
         //open dialog
         helper.showDialog("delete-note-dialog");
     

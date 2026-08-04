@@ -194,10 +194,10 @@ export function showDialog(elementID) {
 }
 
 //can modify existing attribute or add new attribute to container
-export function modifyContainerAttribute(target, attributeName, attributeData) {
-    const container = document.getElementById(target);
+export function modifyElementAttribute(target, attributeName, attributeData) {
+    const element = document.getElementById(target);
 
-    container.setAttribute(attributeName, attributeData);
+    element.setAttribute(attributeName, attributeData);
 }
 
 //Will allow for all buttons with class name close-dialog to close the current dialog popup
