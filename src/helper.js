@@ -45,54 +45,57 @@ export async function deleteNote (targetNote) {
 }
 
 
-//post note, create it with the current time of creation for date created and date modified, add an invisibile character to initialize
-//and give it a name
-export async function createNote () {
+//api createNote
+export async function createNote (newNoteName) {
     try{
         const url = config.baseURL + "/note/";
-        
-        const date = new Date();
-
-        const currYear = date.getFullYear();
-        const currMonth = date.getMonth() + 1;
-        const currDay = date.getDate();
-        const currMinute = date.getMinutes().toString().padStart(2, "0");
-        const hours = date.getHours();
-        const currHour = date.getHours() % 12 || 12;        
-
-
-        const AMPM = hours >= 12 ? "PM" : "AM";
-
-
-        const dateCreated = currMonth + "/" + currDay + "/" + currYear;
-        const timeCreated = currHour + ":" + currMinute + AMPM;
-
-        const content = "\u200B";
     
-        console.log(dateCreated + " " + timeCreated);
-    
-        // const response = await fetch(url, {
-        //     method: "POST",
-        //     headers: {
-        //         "accept": "application/json",
-        //         "Content-Type": "application/json"
-        //     },
-        //     body:JSON.stringify({
-        //         name: "67",
-        //         content: "Hello World",
-        //         date_created: "Today July 29",
-        //         date_modified: "Today July 29"
-        //     })
-        // })
+        const currentDate = getCurrentDateAndTime();
         
-        // if (!response.ok) {
-        //     throw new Error(`Response status: ${response.status}`);
-        // }
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body:JSON.stringify({
+                name: newNoteName,
+                content: "\u200B",
+                date_created: currentDate,
+                date_modified: currentDate
+            })
+        })
+        
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
     }catch(error) {
         console.error(error.message);
     }
 }
 
+function getCurrentDateAndTime() {
+    const date = new Date();
+    const hours = date.getHours();
+
+
+    const currYear = date.getFullYear();
+    const currMonth = date.getMonth() + 1;
+    const currDay = date.getDate();
+    const currMinute = date.getMinutes().toString().padStart(2, "0");
+    const currHour = date.getHours() % 12 || 12;        
+
+
+    const AMPM = hours >= 12 ? "PM" : "AM";
+
+
+    const dateCreated = currMonth + "/" + currDay + "/" + currYear;
+    const timeCreated = currHour + ":" + currMinute + AMPM;
+
+    const returnFormat = dateCreated + " " + timeCreated;
+
+    return returnFormat;
+}
 
 //refresh note list UI
 export async function refreshNotesUI() {
