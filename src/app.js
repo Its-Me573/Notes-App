@@ -2,6 +2,9 @@ import * as helper from "./helper.js";
 
 helper.initializeApp();
 
+helper.createNote();
+
+// helper.showDialog("create-note-dialog");
 
 //Listener that reads the search bar input and then prints the notes that are closest to that note searched
 document.getElementById("search-bar").addEventListener("input", async (e) => {
@@ -32,7 +35,7 @@ document.getElementById("search-bar").addEventListener("input", async (e) => {
 document.getElementById("scrollable-note-names").addEventListener("click", (e) => {
     let buttonPressed = e.target.closest("button");
 
-    //prevent from clicking in the container
+    //prevent user from clicking in the container
     if(buttonPressed === null){
         return;
     }
@@ -40,31 +43,38 @@ document.getElementById("scrollable-note-names").addEventListener("click", (e) =
     if(buttonPressed.getAttribute("class") === "note-button") {
         //future code which will open the notes text
     }else if(buttonPressed.getAttribute("class") === "delete-note-button"){
+
         //change attributes of the dialog to store the target note for deletion
-        helper.changeDeleteNoteDialogAttribute(buttonPressed.getAttribute("target-note"));
+        helper.modifyContainerAttribute("delete-note-button",
+                                        "data-type",
+                                        buttonPressed.getAttribute("target-note") )
         //open dialog
-        helper.showDeleteNoteDialog();
+        helper.showDialog("delete-note-dialog");
+    
     }
 })
 
-document.querySelectorAll(".close-delete-dialog").forEach((button) => {
+//listeners for all buttons in the close-dialog class to close respective dialog pop-up
+document.querySelectorAll(".close-dialog").forEach((button) => {
     button.addEventListener("click", (e) => {
-        helper.closeDeleteNoteDialog();
+        helper.closeDialog(button.getAttribute("dialog-id"));
     })
 })
 
 //event listener to delete the current note that the user has picked
 document.getElementById("delete-note-button").addEventListener("click", async (e) => {
     let targetNote = document.getElementById("delete-note-button").getAttribute("data-type"); 
-    
-    helper.deleteNote(targetNote)
-    .then(() => {
-        helper.closeDeleteNoteDialog();
-    })
-    .then(() => {
+
+    try{
+        await helper.deleteNote(targetNote);
+
+        helper.closeDialog("delete-note-dialog");
         helper.clearNoteListUI();
-    })
-    .then(() => {
-        helper.refreshNotesUI();
-    })
+
+        await helper.refreshNotesUI();
+    }catch(error) {
+        console.error(error.message);
+    }
 })
+
+

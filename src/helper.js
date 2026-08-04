@@ -1,6 +1,7 @@
 import * as config from "../config.js";
 import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.4.1/dist/fuse.mjs'
 
+
 //api connection
 export async function returnAllNoteNames () {
     try {
@@ -25,6 +26,7 @@ export async function returnAllNoteNames () {
     }
 }
 
+
 //api delete note
 export async function deleteNote (targetNote) {
     try {
@@ -41,6 +43,56 @@ export async function deleteNote (targetNote) {
         console.error(error.message);
     }
 }
+
+
+//post note, create it with the current time of creation for date created and date modified, add an invisibile character to initialize
+//and give it a name
+export async function createNote () {
+    try{
+        const url = config.baseURL + "/note/";
+        
+        const date = new Date();
+
+        const currYear = date.getFullYear();
+        const currMonth = date.getMonth() + 1;
+        const currDay = date.getDate();
+        const currMinute = date.getMinutes().toString().padStart(2, "0");
+        const hours = date.getHours();
+        const currHour = date.getHours() % 12 || 12;        
+
+
+        const AMPM = hours >= 12 ? "PM" : "AM";
+
+
+        const dateCreated = currMonth + "/" + currDay + "/" + currYear;
+        const timeCreated = currHour + ":" + currMinute + AMPM;
+
+        const content = "\u200B";
+    
+        console.log(dateCreated + " " + timeCreated);
+    
+        // const response = await fetch(url, {
+        //     method: "POST",
+        //     headers: {
+        //         "accept": "application/json",
+        //         "Content-Type": "application/json"
+        //     },
+        //     body:JSON.stringify({
+        //         name: "67",
+        //         content: "Hello World",
+        //         date_created: "Today July 29",
+        //         date_modified: "Today July 29"
+        //     })
+        // })
+        
+        // if (!response.ok) {
+        //     throw new Error(`Response status: ${response.status}`);
+        // }
+    }catch(error) {
+        console.error(error.message);
+    }
+}
+
 
 //refresh note list UI
 export async function refreshNotesUI() {
@@ -62,11 +114,13 @@ export async function refreshNotesUI() {
     }
 }
 
+
 //app initialization
 //refreshes list of note names
 export function initializeApp () {
     refreshNotesUI();
 }
+
 
 export function clearNoteListUI () {
     const parent = document.getElementById("scrollable-note-names");
@@ -75,6 +129,7 @@ export function clearNoteListUI () {
         parent.removeChild(parent.firstChild);
     }
 }
+
 
 export function renderList (listOfNotes) {
     try {
@@ -113,6 +168,7 @@ export function renderList (listOfNotes) {
     }
 }
 
+
 //input the searchInput to find the result in the noteNames array
 export function fuzzySearchResult (searchInput, noteNames) {
     const fuse = new Fuse(noteNames, {
@@ -131,20 +187,23 @@ export function fuzzySearchResult (searchInput, noteNames) {
     return normalizedArr;
 }
 
-export function showDeleteNoteDialog() {
-   const dialog = document.getElementById("delete-note-dialog");
+
+export function showDialog(elementID) {
+   const dialog = document.getElementById(elementID);
    dialog.showModal();
 }
 
-//change attribute of the delete button for delete event listener
-export function changeDeleteNoteDialogAttribute(noteName) {
-    const dialog = document.getElementById("delete-note-button");
-    dialog.setAttribute("data-type", noteName);
+//can modify existing attribute or add new attribute to container
+export function modifyContainerAttribute(target, attributeName, attributeData) {
+    const container = document.getElementById(target);
+
+    container.setAttribute(attributeName, attributeData);
 }
 
-export function closeDeleteNoteDialog() {
-   const dialog = document.getElementById("delete-note-dialog");
-   dialog.close();
+//Will allow for all buttons with class name close-dialog to close the current dialog popup
+export function closeDialog(dialogID) {
+    const dialog = document.getElementById(dialogID);
+    dialog.close();
 }
 
 
