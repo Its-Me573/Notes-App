@@ -158,7 +158,7 @@
 
 
 #create-note-dialog {
-   height: 150px;
+   height: 165px;
    width: 500px;
    padding: 0;
 
@@ -242,6 +242,11 @@
 
 
 #create-note-dialog .dialog-body {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   flex-direction: column;
+
    padding: 4px;
 }
 
@@ -263,7 +268,7 @@
 }
 
 
-#create-note-dialog .create-note-input {
+#create-note-input {
    width: 478px;
    height: 30px;
 
@@ -348,4 +353,20 @@
    border: none;
 
    cursor: pointer;
+}
+
+
+#create-note-dialog .dialog-body div {
+   display: flex;
+   align-items: center;
+   justify-content: center;   
+   
+   border: 2px solid black;
+   border-radius: 5px;
+   
+   font-weight: bold;
+
+   color: red;
+
+   width: 250px;
 }

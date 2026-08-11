@@ -66,6 +66,19 @@ export async function createNote (newNoteName) {
             })
         })
         
+        // console.log(response.status);
+
+        if(response.status === 400) {
+            // console.log("This note name already exists");
+            let container = document.querySelector("#create-note-dialog .dialog-body");
+            const errorMessage = document.createElement("div");
+            errorMessage.textContent = "Note name already exists"
+
+            container.appendChild(errorMessage);
+
+            return false;
+        }
+
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
@@ -197,6 +210,7 @@ export function showDialog(elementID) {
    dialog.showModal();
 }
 
+
 //can modify existing attribute or add new attribute to container
 export function modifyElementAttribute(target, attributeName, attributeData) {
     const element = document.getElementById(target);
@@ -204,10 +218,18 @@ export function modifyElementAttribute(target, attributeName, attributeData) {
     element.setAttribute(attributeName, attributeData);
 }
 
+
 //Will allow for all buttons with class name close-dialog to close the current dialog popup
 export function closeDialog(dialogID) {
     const dialog = document.getElementById(dialogID);
     dialog.close();
 }
 
+
+//get the information from a text input and store it
+export function getTextElementInput(textInputElementID) {
+
+    return document.getElementById(textInputElementID).value;     
+
+}
 
