@@ -1,6 +1,7 @@
 import * as config from "../config.js";
 import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.4.1/dist/fuse.mjs'
 
+
 //api connection
 export async function returnAllNoteNames () {
     try {
@@ -25,11 +26,11 @@ export async function returnAllNoteNames () {
     }
 }
 
+
 //api delete note
 export async function deleteNote (targetNote) {
     try {
         const url = config.baseURL + "/note/" + targetNote;
-
         const response = await fetch(url, {
             method: "DELETE",
         })
@@ -42,10 +43,70 @@ export async function deleteNote (targetNote) {
     }
 }
 
+
+//api createNote
+export async function createNote (newNoteName) {
+    try{
+        const url = config.baseURL + "/note/";
+    
+        const currentDate = getCurrentDateAndTime();
+        
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body:JSON.stringify({
+                name: newNoteName,
+                content: "\u200B",
+                date_created: currentDate,
+                date_modified: currentDate
+            })
+        })
+        
+
+        if(response.status === 400) {
+            
+            return false;
+        }
+
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+    }catch(error) {
+        console.error(error.message);
+    }
+}
+
+
+function getCurrentDateAndTime() {
+    const date = new Date();
+    const hours = date.getHours();
+
+
+    const currYear = date.getFullYear();
+    const currMonth = date.getMonth() + 1;
+    const currDay = date.getDate();
+    const currMinute = date.getMinutes().toString().padStart(2, "0");
+    const currHour = date.getHours() % 12 || 12;        
+
+
+    const AMPM = hours >= 12 ? "PM" : "AM";
+
+
+    const dateCreated = currMonth + "/" + currDay + "/" + currYear;
+    const timeCreated = currHour + ":" + currMinute + AMPM;
+
+    const returnFormat = dateCreated + " " + timeCreated;
+
+    return returnFormat;
+}
+
+
 //refresh note list UI
 export async function refreshNotesUI() {
     let listOfNotes = await returnAllNoteNames();
-    // console.log(listOfNotes.length);
 
     if(listOfNotes.length === 0 ) {
         //append image to the scrollable note names container
@@ -55,12 +116,12 @@ export async function refreshNotesUI() {
         const message = document.createTextNode("No Notes Yet");
         noNotesMessage.appendChild(message);
 
-        notesContainer.setAttribute("id", "no-notes");
         notesContainer.appendChild(noNotesMessage);
     }else {
         renderList(listOfNotes);
     }
 }
+
 
 //app initialization
 //refreshes list of note names
@@ -68,13 +129,17 @@ export function initializeApp () {
     refreshNotesUI();
 }
 
+
+//should work
 export function clearNoteListUI () {
     const parent = document.getElementById("scrollable-note-names");
 
+    //problem with this line. the entire scrollable notes should not be removed
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
     }
 }
+
 
 export function renderList (listOfNotes) {
     try {
@@ -107,11 +172,13 @@ export function renderList (listOfNotes) {
             notesContainer.appendChild(deleteNoteButton);
             notesContainer.appendChild(dateHeader);
         })
+
     }catch(error) {
         console.log(error.message);
         return [];
     }
 }
+
 
 //input the searchInput to find the result in the noteNames array
 export function fuzzySearchResult (searchInput, noteNames) {
@@ -131,20 +198,42 @@ export function fuzzySearchResult (searchInput, noteNames) {
     return normalizedArr;
 }
 
-export function showDeleteNoteDialog() {
-   const dialog = document.getElementById("delete-note-dialog");
+
+export function showDialog(elementID) {
+   const dialog = document.getElementById(elementID);
    dialog.showModal();
 }
 
-//change attribute of the delete button for delete event listener
-export function changeDeleteNoteDialogAttribute(noteName) {
-    const dialog = document.getElementById("delete-note-button");
-    dialog.setAttribute("data-type", noteName);
+
+//can modify existing attribute or add new attribute to container
+export function modifyElementAttribute(target, attributeName, attributeData) {
+    const element = document.getElementById(target);
+
+    element.setAttribute(attributeName, attributeData);
 }
 
-export function closeDeleteNoteDialog() {
-   const dialog = document.getElementById("delete-note-dialog");
-   dialog.close();
+
+//Will allow for all buttons with class name close-dialog to close the current dialog popup
+export function closeDialog(dialogID) {
+    const dialog = document.getElementById(dialogID);
+    dialog.close();
 }
 
+
+//get the information from a text input and store it
+export function getTextElementInput(textInputElementID) {
+
+    return document.getElementById(textInputElementID).value;     
+}
+
+export async function doNotesExist() {
+
+    const allNotes = await returnAllNoteNames();
+
+    if(allNotes.length === 0) {
+        return false;
+    }
+
+    return true;
+}
 
