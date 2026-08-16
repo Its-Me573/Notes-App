@@ -68,7 +68,6 @@ export async function createNote (newNoteName) {
 
         if(response.status === 400) {
             
-
             return false;
         }
 
@@ -108,7 +107,6 @@ function getCurrentDateAndTime() {
 //refresh note list UI
 export async function refreshNotesUI() {
     let listOfNotes = await returnAllNoteNames();
-    // console.log(listOfNotes.length);
 
     if(listOfNotes.length === 0 ) {
         //append image to the scrollable note names container
@@ -117,9 +115,6 @@ export async function refreshNotesUI() {
         const noNotesMessage = document.createElement("h1");
         const message = document.createTextNode("No Notes Yet");
         noNotesMessage.appendChild(message);
-
-        // notesContainer.setAttribute("id", "no-notes");
-
 
         notesContainer.appendChild(noNotesMessage);
     }else {
@@ -139,7 +134,6 @@ export function initializeApp () {
 export function clearNoteListUI () {
     const parent = document.getElementById("scrollable-note-names");
 
-    //console.log(parent.children);
     //problem with this line. the entire scrollable notes should not be removed
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
@@ -178,6 +172,7 @@ export function renderList (listOfNotes) {
             notesContainer.appendChild(deleteNoteButton);
             notesContainer.appendChild(dateHeader);
         })
+
     }catch(error) {
         console.log(error.message);
         return [];
