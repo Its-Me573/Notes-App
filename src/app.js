@@ -2,8 +2,6 @@ import * as helper from "./helper.js";
 
 helper.initializeApp();
 
-// helper.showDialog("create-note-dialog");
-
 
 //prevent dialogs from being closed with "Esc"
 document.querySelectorAll(".dialog-popup").forEach((dialog) => {
@@ -41,7 +39,7 @@ document.getElementById("search-bar").addEventListener("input", async (e) => {
 })  
 
 
-//will open a dialog if user wants to delete a note
+//will open a dialog if user wants to DELETE a note or VIEW a note
 document.getElementById("scrollable-note-names").addEventListener("click", (e) => {
     let buttonPressed = e.target.closest("button");
 
@@ -68,13 +66,21 @@ document.getElementById("scrollable-note-names").addEventListener("click", (e) =
 //listeners for all buttons in the close-dialog class to close respective dialog pop-up
 document.querySelectorAll(".close-dialog").forEach((button) => {
     button.addEventListener("click", (e) => {
+        document.getElementById("create-note-input" ).value = "";
+        
         const dialog = button.getAttribute("dialog-id");
         helper.closeDialog(dialog);
 
         if(dialog === "create-note-dialog"){
-            document.getElementById("create-note-input" ).value = "";
-            const duplicateNoteMessage = document.querySelector("#create-note-dialog .dialog-body div");
-            duplicateNoteMessage.remove();
+            const duplicateNotesMessage = document.querySelector("#create-note-dialog .dialog-body div");
+
+            if(duplicateNotesMessage != null) {
+                duplicateNotesMessage.remove();
+
+            }else {
+                return;
+
+            }
         }
     }
 )
@@ -83,14 +89,17 @@ document.querySelectorAll(".close-dialog").forEach((button) => {
 
 //event listener to delete the current note that the user has picked
 document.getElementById("delete-note-button").addEventListener("click", async (e) => {
+
+    //Get the data of the note from the current dialog that was opened
     let targetNote = document.getElementById("delete-note-button").getAttribute("data-type"); 
 
-    try{
-        await helper.deleteNote(targetNote);
 
+    try{
+        await helper.deleteNote(encodeURIComponent(targetNote));
         helper.closeDialog("delete-note-dialog");
         helper.clearNoteListUI();
 
+        
         await helper.refreshNotesUI();
     }catch(error) {
         console.error(error.message);
@@ -106,23 +115,65 @@ document.getElementById("add-note-button").addEventListener("click", () => {
 
 //event listener to create new note
 document.getElementById("create-note-button").addEventListener("click", async (e) => {
-    //get the current text that was written in the input
+    //get the current text that was written in the dialog text input
     let input = helper.getTextElementInput("create-note-input");
 
+    const doNotesExist = await helper.doNotesExist(); //true if note exists false if none
+
+    //api call which returns true or fals for correct running
     let noteInputReturn = await helper.createNote(input);
     
-    if(noteInputReturn === false) {
+    if(noteInputReturn === false) {//note name trying to be created already exists
+
         //show an error on the dialog by inserting an html element saying that this note already exists
-        const dialog = document.getElementById("create-note-input");
+        const noteExistsErrorMessage = document.querySelector("#create-note-dialog .dialog-body div");
 
+        if(noteExistsErrorMessage === null) {
+            let container = document.querySelector("#create-note-dialog .dialog-body");
+            const errorMessage = document.createElement("div");
+            errorMessage.textContent = "Note name already exists"
 
-    }else {
-        helper.closeDialog("create-note-dialog");
-        helper.clearNoteListUI();
-        await helper.refreshNotesUI();
-        document.getElementById("create-note-input" ).value = "";
-        const duplicateNoteMessage = document.querySelector("#create-note-dialog .dialog-body div");
-        duplicateNoteMessage.remove();
+            container.appendChild(errorMessage);
+            
+        }else {
+            
+            return;
+        }
+
+    }else {//note created has a unique name
+
+        if(!doNotesExist) {//no notes currently exist
+            //close the dialog page
+            helper.closeDialog("create-note-dialog");
+
+            //clear the "No Notes" message from the notes sliding page
+            const noNotesMessage = document.querySelector("#scrollable-note-names h1");
+            noNotesMessage.remove()
+
+            //render the list with the new note created
+            let listOfNotes = await helper.returnAllNoteNames();
+            helper.renderList(listOfNotes);
+
+            //clear the text input
+            document.getElementById("create-note-input" ).value = "";
+ 
+        }else {//one or more notes exist
+            
+            helper.closeDialog("create-note-dialog");
+            helper.clearNoteListUI();
+
+            await helper.refreshNotesUI();
+
+            //clear the text input
+            document.getElementById("create-note-input" ).value = "";
+        }
+
+        //Remove the duplicate notes error message if it exists
+        const duplicateNotesMessage = document.querySelector("#create-note-dialog .dialog-body div");
+
+        if(duplicateNotesMessage != null) {
+            duplicateNotesMessage.remove();
+        }
     }
 
 })

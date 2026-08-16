@@ -31,7 +31,6 @@ export async function returnAllNoteNames () {
 export async function deleteNote (targetNote) {
     try {
         const url = config.baseURL + "/note/" + targetNote;
-
         const response = await fetch(url, {
             method: "DELETE",
         })
@@ -66,15 +65,9 @@ export async function createNote (newNoteName) {
             })
         })
         
-        // console.log(response.status);
 
         if(response.status === 400) {
-            // console.log("This note name already exists");
-            let container = document.querySelector("#create-note-dialog .dialog-body");
-            const errorMessage = document.createElement("div");
-            errorMessage.textContent = "Note name already exists"
-
-            container.appendChild(errorMessage);
+            
 
             return false;
         }
@@ -111,6 +104,7 @@ function getCurrentDateAndTime() {
     return returnFormat;
 }
 
+
 //refresh note list UI
 export async function refreshNotesUI() {
     let listOfNotes = await returnAllNoteNames();
@@ -124,7 +118,9 @@ export async function refreshNotesUI() {
         const message = document.createTextNode("No Notes Yet");
         noNotesMessage.appendChild(message);
 
-        notesContainer.setAttribute("id", "no-notes");
+        // notesContainer.setAttribute("id", "no-notes");
+
+
         notesContainer.appendChild(noNotesMessage);
     }else {
         renderList(listOfNotes);
@@ -139,9 +135,12 @@ export function initializeApp () {
 }
 
 
+//should work
 export function clearNoteListUI () {
     const parent = document.getElementById("scrollable-note-names");
 
+    //console.log(parent.children);
+    //problem with this line. the entire scrollable notes should not be removed
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
     }
@@ -230,6 +229,16 @@ export function closeDialog(dialogID) {
 export function getTextElementInput(textInputElementID) {
 
     return document.getElementById(textInputElementID).value;     
+}
 
+export async function doNotesExist() {
+
+    const allNotes = await returnAllNoteNames();
+
+    if(allNotes.length === 0) {
+        return false;
+    }
+
+    return true;
 }
 
