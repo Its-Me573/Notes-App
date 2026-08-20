@@ -80,6 +80,42 @@ export async function createNote (newNoteName) {
 }
 
 
+//api call: get single note
+export async function getNote (targetNoteName) {
+    try {
+        const url = config.baseURL + "/note/";
+        const encoded = encodeURIComponent(targetNoteName)
+        // console.log(encoded);
+
+        const encodedURL = url + encoded
+        console.log(encodedURL);
+
+        const response = await fetch(encodedURL, {
+            method: "GET",
+            headers: {
+                "accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        });
+
+        if(response.status === 400) {
+            
+            return false;
+        }
+
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+        
+        const returningNote = await response.json();
+
+        return returningNote;
+    }catch(error) {
+        console.error(error.message);
+    }
+}
+
+
 function getCurrentDateAndTime() {
     const date = new Date();
     const hours = date.getHours();
