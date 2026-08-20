@@ -11,17 +11,20 @@
     <link rel="stylesheet" href="./styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
     rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+
 </head>
 
 
 <body id="app-background">    
 
-    <header id = "navbar">
-        <h1 id = "title">Notes</h1>
-        <hr id = "header-line">
-    </header>
+    <div id = "navbar">
+        <header class = "navbar-app-name">Notes</header>
+    </div>
 
     
+    <div id = "main-app">
 
         <div id = "note-name-box">
             <div id = "notes-search-addition">
@@ -31,6 +34,35 @@
 
             <div id = "scrollable-note-names"></div>
         </div>
+
+
+        <div id = "note-editor-container">
+            <!-- will store 2 containes one for the name of the app on the top with an option to change its name and the bottom editor -->
+            <div id = "note-title-bar">
+                <input type= "text" id = "rename-note-input">
+            </div>
+
+            <div id = "note-text-editor">
+
+                <div id="editor">
+
+                    <p>Hello World!</p>
+                    <p>Some initial <strong>bold</strong> text</p>
+                    <p><br /></p>
+
+
+
+
+                </div>
+
+            </div>
+
+        </div>  
+
+        
+    </div>
+
+    
 
     
 
@@ -56,7 +88,6 @@
 
     </dialog>
        
-
     <dialog id = "create-note-dialog" class = "dialog-popup">
         <div class = "dialog-header">
             <div class = dialog-title>Create New Note</div>
@@ -77,7 +108,9 @@
         </div>
     </dialog>
 
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
     <script type = "module" src = "./app.js"></script>
-</body>
+    
 
+</body>
 </html>

@@ -1,5 +1,7 @@
-#app-background{
-   background-color: rgb(26, 25, 25);
+#app-background{ 
+   /* display: flex; */
+   
+   background-color: rgb(46, 45, 45);
 
    margin: 0;
    border: 0;
@@ -11,25 +13,34 @@
    display: flex;
 }
 
+#navbar {
+   display: flex;
+   justify-content:center;
+   align-items: center;
 
-/* the bar on the top of the screen */
-#navbar{
-   background-color: #808080;
+   margin-top: 13px;
 
-   padding-top: 1px;
+
+   /* background-color: #808080; */
+
+   height: 45px;
 }
 
-
-#title{
-   color: rgb(255, 255, 255);
-
+#navbar .navbar-app-name {
    display: flex;
+   justify-content: center;
    align-items: center;
-   padding-left: 40px;
+   
+   font-weight: bold;
 
-   font-family: 'Inter', serif;
-   font-size: 44px;
-   font-weight: normal;
+   border-radius: 10px;
+   border: 1px solid white;
+   background-color:#808080;
+
+
+   font-size: 40px;
+   width: 1200px;
+
 }
 
 
@@ -386,4 +397,70 @@ note creation, note search, and note delete */
    color: red;
 
    width: 250px;
+}
+
+
+
+#note-editor-container {
+   display: flex;
+   flex-direction: column;
+
+   height: 780px;  
+   margin: 18px;
+
+   border-radius: 7px;
+   border: 1px solid white;
+
+   background-color: transparent;
+   
+   /* width: 1330px; */
+   width: 100%;
+   height: 800px;
+
+}
+
+#note-title-bar {
+   display: flex;
+   justify-content:left;
+   align-items: center;
+
+
+   padding: 4px;
+
+   background-color: #808080;
+
+   border-top-left-radius: 7px;
+   border-top-right-radius: 7px;
+
+   height: 35px;
+
+}
+
+#rename-note-input {
+   width: 1250px;
+   height: 25px;
+
+   border-radius: 7px;
+
+
+   background-color: transparent;
+
+
+   font-size: 25px;
+   font-weight: bold;
+   color: white;
+   -webkit-text-stroke: 1px black;
+}
+
+.ql-toolbar.ql-snow {
+   background-color: white;
+}
+
+#editor {
+   background-color: white;
+
+   height: 716px;
+
+   border-bottom-left-radius: 7px;
+   border-bottom-right-radius: 7px;
 }

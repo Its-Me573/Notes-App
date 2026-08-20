@@ -1,5 +1,23 @@
 import * as helper from "./helper.js";
 
+//Note text editor
+const quill = new Quill('#editor', {
+  modules: {
+    history: {
+      delay: 1000,
+      maxStack: 500,
+      userOnly: true
+    },
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ['bold', 'italic', 'underline'],
+    ],
+  },
+  placeholder: 'Create your note...',
+  theme: 'snow', // or 'bubble'
+});
+
+
 helper.initializeApp();
 
 
