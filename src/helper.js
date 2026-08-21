@@ -44,10 +44,10 @@ export async function deleteNote (targetNote) {
 }
 
 
-//POST api call: create note
+//POST api call: create and add note
 export async function createNote (newNoteName) {
     try{
-        const url = config.baseURL + "/note/";
+        const url = config.baseURL + "/notes";
     
         const currentDate = getCurrentDateAndTime();
         
@@ -84,14 +84,13 @@ export async function createNote (newNoteName) {
 //GET api call: get single note
 export async function getNote (targetNoteName) {
     try {
-        const url = config.baseURL + "/note/";
-        const encoded = encodeURIComponent(targetNoteName)
-        // console.log(encoded);
+        const encodedNoteName = encodeURIComponent(targetNoteName)
+        const url = config.baseURL + "/note/" + encodedNoteName;
+    
+        //const encodedURL = url + encoded
+        //console.log(encodedURL);
 
-        const encodedURL = url + encoded
-        console.log(encodedURL);
-
-        const response = await fetch(encodedURL, {
+        const response = await fetch(url, {
             method: "GET",
             headers: {
                 "accept": "application/json",
@@ -118,13 +117,11 @@ export async function getNote (targetNoteName) {
 
 
 //PUT api call: modify note content
-export async function modifyNoteContent(modifiedContent, targetNote) {
+export async function modifyNoteContent(targetNote, modifiedContent) {
     try {
-        const url = config.baseURL + "/note/" + encodeURIComponent(targetNote);
-        // console.log(url);
+        const url = config.baseURL + "/note/" + encodeURIComponent(targetNote) + "/modify";
 
         const currentDate = getCurrentDateAndTime();
-
 
         const response = await fetch(url, {
             method: "PUT",
@@ -153,8 +150,34 @@ export async function modifyNoteContent(modifiedContent, targetNote) {
 }
 
 
+//PUT api call: rename note
+export async function renameNote(targetNote, newName) {
+    try {
+        const url = config.baseURL + "/note/" + encodeURIComponent(targetNote) + "/rename";
+        // console.log(url); 
+
+        const currentDate = getCurrentDateAndTime();
+
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+                "accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body:JSON.stringify({
+                new_name: newName,
+                date_modified: currentDate,
+            })
+
+        })
+
+    }catch(error) {
+        console.error(error.message);
+    }
+}
 
 
+// Returns current date and time in MM/DD/YYYY H:MMAM/PM format, e.g. "8/20/2026 9:15PM"
 function getCurrentDateAndTime() {
     const date = new Date();
     const hours = date.getHours();
@@ -216,6 +239,7 @@ export function clearNoteListUI () {
 }
 
 
+//Loads elements into the scrollable list of notes
 export function renderList (listOfNotes) {
     try {
         listOfNotes.forEach((item) => {
@@ -300,6 +324,7 @@ export function getTextElementInput(textInputElementID) {
 
     return document.getElementById(textInputElementID).value;     
 }
+
 
 export async function doNotesExist() {
 
