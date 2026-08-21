@@ -2,7 +2,7 @@ import * as config from "../config.js";
 import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.4.1/dist/fuse.mjs'
 
 
-//api connection
+//GET api call: return all note names
 export async function returnAllNoteNames () {
     try {
         const url = config.baseURL + "/notes";
@@ -27,7 +27,7 @@ export async function returnAllNoteNames () {
 }
 
 
-//api delete note
+//DELETE api call: delete note
 export async function deleteNote (targetNote) {
     try {
         const url = config.baseURL + "/note/" + targetNote;
@@ -44,7 +44,7 @@ export async function deleteNote (targetNote) {
 }
 
 
-//api createNote
+//POST api call: create note
 export async function createNote (newNoteName) {
     try{
         const url = config.baseURL + "/note/";
@@ -74,13 +74,14 @@ export async function createNote (newNoteName) {
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
+
     }catch(error) {
         console.error(error.message);
     }
 }
 
 
-//api call: get single note
+//GET api call: get single note
 export async function getNote (targetNoteName) {
     try {
         const url = config.baseURL + "/note/";
@@ -114,6 +115,44 @@ export async function getNote (targetNoteName) {
         console.error(error.message);
     }
 }
+
+
+//PUT api call: modify note content
+export async function modifyNoteContent(modifiedContent, targetNote) {
+    try {
+        const url = config.baseURL + "/note/" + encodeURIComponent(targetNote);
+        // console.log(url);
+
+        const currentDate = getCurrentDateAndTime();
+
+
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+                "accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body:JSON.stringify({
+                content: modifiedContent,
+                date_modified: currentDate,
+            })
+        })
+
+
+        if(response.status === 400) {    
+            return false;
+        }
+
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+    }catch(error) {
+        console.error(error.message);
+    }
+}
+
+
 
 
 function getCurrentDateAndTime() {
