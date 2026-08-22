@@ -195,3 +195,12 @@ document.getElementById("create-note-button").addEventListener("click", async (e
     }
 
 })
+
+
+document.getElementById("rename-note-input").addEventListener("focusout", async (e) => {
+    
+    const dialogOpening = document.getElementById("rename-note-empty-dialog");
+    const dialogOpeningTwo = document.getElementById("rename-note-duplicate-dialog")
+    dialogOpeningTwo.showModal();
+})
+

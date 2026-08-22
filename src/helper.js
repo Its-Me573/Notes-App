@@ -65,9 +65,8 @@ export async function createNote (newNoteName) {
             })
         })
         
-
+        //Note already exists
         if(response.status === 400) {
-            
             return false;
         }
 
@@ -86,9 +85,6 @@ export async function getNote (targetNoteName) {
     try {
         const encodedNoteName = encodeURIComponent(targetNoteName)
         const url = config.baseURL + "/note/" + encodedNoteName;
-    
-        //const encodedURL = url + encoded
-        //console.log(encodedURL);
 
         const response = await fetch(url, {
             method: "GET",
@@ -154,7 +150,6 @@ export async function modifyNoteContent(targetNote, modifiedContent) {
 export async function renameNote(targetNote, newName) {
     try {
         const url = config.baseURL + "/note/" + encodeURIComponent(targetNote) + "/rename";
-        // console.log(url); 
 
         const currentDate = getCurrentDateAndTime();
 

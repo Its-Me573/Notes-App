@@ -56,8 +56,6 @@
             </div>
 
         </div>  
-
-        
     </div>
 
     
@@ -84,6 +82,7 @@
 
     </dialog>
        
+    
     <dialog id = "create-note-dialog" class = "dialog-popup">
         <div class = "dialog-header">
             <div class = dialog-title>Create New Note</div>
@@ -105,8 +104,25 @@
     </dialog>
 
 
+    <dialog id="rename-note-empty-dialog" class="dialog-popup">
+        <div class="dialog-header">
+            <div class="dialog-title">Current Note Name is Empty</div>
+            <button class = "close-dialog" dialog-id = "rename-note-empty-dialog">&times;</button>
+        </div>
+    </dialog>
+
+
+    <dialog id="rename-note-duplicate-dialog" class="dialog-popup">
+        <div class="dialog-header">
+            <div class="dialog-title">Current Note Name Already Exists</div>
+            <button class = "close-dialog" dialog-id = "rename-note-duplicate-dialog">&times;</button>
+        </div>
+    </dialog>
+
+
+
+
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
     <script type = "module" src = "./app.js"></script>
-
 </body>
 </html>
