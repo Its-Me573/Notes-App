@@ -58,7 +58,7 @@ document.getElementById("search-bar").addEventListener("input", async (e) => {
 
 
 //will open a dialog if user wants to DELETE a note or VIEW a note
-document.getElementById("scrollable-note-names").addEventListener("click", (e) => {
+document.getElementById("scrollable-note-names").addEventListener("click", async (e) => {
     const buttonPressed = e.target.closest("button");
 
     //prevent user from clicking in the container
@@ -69,14 +69,23 @@ document.getElementById("scrollable-note-names").addEventListener("click", (e) =
     
     if(buttonPressed.getAttribute("class") === "note-button") {
         //When a note name button is pressed, that notes name will be put into session storage
-        const currentNoteClickedName = buttonPressed.getAttribute("note");
-    
+        const currentNoteSelectedName = buttonPressed.getAttribute("note");
+        //console.log(currentNoteSelectedName);
+
         //store the current note in session storage
-        sessionStorage.setItem("currentNoteViewingName", currentNoteClickedName);
+        sessionStorage.setItem("currentNoteViewingName", currentNoteSelectedName);
 
         //after session storage is set, the value of that note has to be grabbed and sent to the text editor
         const renameInput = document.getElementById("rename-note-input");
         renameInput.value = sessionStorage.getItem("currentNoteViewingName");
+
+        //show contents of the current note in the editor
+        const targetNoteContent = await helper.getNote(currentNoteSelectedName);
+        const delta = JSON.parse(targetNoteContent.content);
+        
+        quill.setContents(delta);
+
+        //console.log(delta);
 
     }else if(buttonPressed.getAttribute("class") === "delete-note-button"){
         //change attributes of the dialog to store the target note for deletion
@@ -115,16 +124,13 @@ document.querySelectorAll(".close-dialog").forEach((button) => {
 
 //event listener to delete the current note that the user has picked
 document.getElementById("delete-note-button").addEventListener("click", async (e) => {
-
     //Get the data of the note from the current dialog that was opened
     let targetNote = document.getElementById("delete-note-button").getAttribute("data-type"); 
-
 
     try{
         await helper.deleteNote(encodeURIComponent(targetNote));
         helper.closeDialog("delete-note-dialog");
         helper.clearNoteListUI();
-
         
         await helper.refreshNotesUI();
 
@@ -240,4 +246,38 @@ document.getElementById("rename-note-input").addEventListener("focusout", async 
         renameInput.value = sessionStorage.getItem("currentNoteViewingName");
     }
 })
+
+
+//write event listener that looks at the quilljs text input, debounces
+let timer;
+
+quill.on('text-change', () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+
+        const delta = quill.getContents();
+        const jsonDelta = JSON.stringify(delta);
+
+        //send the jsonDelta to the api
+        helper.modifyNoteContent(sessionStorage.getItem("currentNoteViewingName"), jsonDelta);
+
+    }, 300);
+});
+
+
+quill.on('text-change', helper.throttle(() => {
+    const delta = quill.getContents();
+    const jsonDelta = JSON.stringify(delta);
+    
+    //send the jsonDelta to the api
+    helper.modifyNoteContent(sessionStorage.getItem("currentNoteViewingName"), jsonDelta);
+
+    //refresh the ui to show modified date
+    helper.clearNoteListUI();
+    helper.refreshNotesUI();
+
+}, 10000));
+
+
+
 
