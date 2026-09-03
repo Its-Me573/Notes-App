@@ -59,24 +59,32 @@ document.getElementById("search-bar").addEventListener("input", async (e) => {
 
 //will open a dialog if user wants to DELETE a note or VIEW a note
 document.getElementById("scrollable-note-names").addEventListener("click", (e) => {
-    let buttonPressed = e.target.closest("button");
+    const buttonPressed = e.target.closest("button");
 
     //prevent user from clicking in the container
     if(buttonPressed === null){
         return;
     }
 
+    
     if(buttonPressed.getAttribute("class") === "note-button") {
-        //future code which will open the notes text
-    }else if(buttonPressed.getAttribute("class") === "delete-note-button"){
+        //When a note name button is pressed, that notes name will be put into session storage
+        const currentNoteClickedName = buttonPressed.getAttribute("note");
+    
+        //store the current note in session storage
+        sessionStorage.setItem("currentNoteViewingName", currentNoteClickedName);
 
+        //after session storage is set, the value of that note has to be grabbed and sent to the text editor
+        const renameInput = document.getElementById("rename-note-input");
+        renameInput.value = sessionStorage.getItem("currentNoteViewingName");
+
+    }else if(buttonPressed.getAttribute("class") === "delete-note-button"){
         //change attributes of the dialog to store the target note for deletion
         helper.modifyElementAttribute("delete-note-button",
                                       "data-type",
                                       buttonPressed.getAttribute("target-note") )
         //open dialog
         helper.showDialog("delete-note-dialog");
-    
     }
 })
 
@@ -119,6 +127,7 @@ document.getElementById("delete-note-button").addEventListener("click", async (e
 
         
         await helper.refreshNotesUI();
+
     }catch(error) {
         console.error(error.message);
     }
@@ -198,9 +207,37 @@ document.getElementById("create-note-button").addEventListener("click", async (e
 
 
 document.getElementById("rename-note-input").addEventListener("focusout", async (e) => {
+    //rename note input
+    const newNameInput = e.target.value;
+
+    //modal popups
+    const emptyNoteNameDialog = document.getElementById("rename-note-empty-dialog");
+    const duplicateNoteNameDialog = document.getElementById("rename-note-duplicate-dialog")
     
-    const dialogOpening = document.getElementById("rename-note-empty-dialog");
-    const dialogOpeningTwo = document.getElementById("rename-note-duplicate-dialog")
-    dialogOpeningTwo.showModal();
+    //current name is nothing, no changes are made, a name is required
+    if(newNameInput.length == 0) {
+        emptyNoteNameDialog.showModal();
+        return;
+    }
+
+    //The rename is the same as what was before, no changes are made
+    if(newNameInput == sessionStorage.getItem("currentNoteViewingName")) {
+        return;
+    }
+
+    //The name is a duplicate and the current name already exists, either true or false
+    const didRenameNoteWork = await helper.renameNote(sessionStorage.getItem("currentNoteViewingName"), newNameInput);
+    
+    //change the current note name in session storage, refresh the ui
+    if(didRenameNoteWork) {        
+        sessionStorage.setItem("currentNoteViewingName", newNameInput)
+        helper.clearNoteListUI();
+        helper.refreshNotesUI();
+    }else {
+        duplicateNoteNameDialog.showModal();
+
+        const renameInput = document.getElementById("rename-note-input");
+        renameInput.value = sessionStorage.getItem("currentNoteViewingName");
+    }
 })
 

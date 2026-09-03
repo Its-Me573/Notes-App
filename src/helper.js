@@ -166,6 +166,16 @@ export async function renameNote(targetNote, newName) {
 
         })
 
+        //check whether the newName already exists
+        if(response.status == 409) {
+            return false;
+        }
+
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        return true;
     }catch(error) {
         console.error(error.message);
     }
@@ -331,4 +341,3 @@ export async function doNotesExist() {
 
     return true;
 }
-

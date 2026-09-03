@@ -554,3 +554,7 @@ note creation, note search, and note delete */
    border-bottom-left-radius: 7px;
    border-bottom-right-radius: 7px;
 }
+
+.date-modified-header {
+   pointer-events: none;
+}
