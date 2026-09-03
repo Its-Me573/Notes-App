@@ -20,6 +20,24 @@ const quill = new Quill('#editor', {
 
 helper.initializeApp();
 
+//check for notes currently being viewed in the session
+const currentNoteInSession = sessionStorage.getItem("currentNoteViewingName");
+
+if(currentNoteInSession === null) {
+    //write no note selected into the input name 
+    const renameInput = document.getElementById("rename-note-input");
+    renameInput.value = "No Note Selected";
+}else {
+    //display the current note name in the input
+    const renameInput = document.getElementById("rename-note-input");
+    renameInput.value = sessionStorage.getItem("currentNoteViewingName");
+
+    //display the text from the notes content
+    const targetNoteContent = await helper.getNote(currentNoteInSession);
+    const delta = JSON.parse(targetNoteContent.content);
+    
+    quill.setContents(delta);
+}
 
 //prevent dialogs from being closed with "Esc"
 document.querySelectorAll(".dialog-popup").forEach((dialog) => {
@@ -65,7 +83,6 @@ document.getElementById("scrollable-note-names").addEventListener("click", async
     if(buttonPressed === null){
         return;
     }
-
     
     if(buttonPressed.getAttribute("class") === "note-button") {
         //When a note name button is pressed, that notes name will be put into session storage
@@ -261,7 +278,7 @@ quill.on('text-change', () => {
         //send the jsonDelta to the api
         helper.modifyNoteContent(sessionStorage.getItem("currentNoteViewingName"), jsonDelta);
 
-    }, 300);
+    }, 500);
 });
 
 
@@ -277,7 +294,3 @@ quill.on('text-change', helper.throttle(() => {
     helper.refreshNotesUI();
 
 }, 10000));
-
-
-
-
