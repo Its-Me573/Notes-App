@@ -13,7 +13,6 @@ const quill = new Quill('#editor', {
       ['bold', 'italic', 'underline'],
     ],
   },
-  placeholder: 'Create your note...',
   theme: 'snow', // or 'bubble'
 });
 
@@ -230,6 +229,14 @@ document.getElementById("create-note-button").addEventListener("click", async (e
 
 
 document.getElementById("rename-note-input").addEventListener("focusout", async (e) => {
+    //check whether there is a note in session storage
+    if(sessionStorage.getItem("currentNoteViewingName") == null) {
+        const renameInput = document.getElementById("rename-note-input");
+        renameInput.value = "No Note Selected";
+        
+        return;
+    }
+    
     //rename note input
     const newNameInput = e.target.value;
 
@@ -265,9 +272,10 @@ document.getElementById("rename-note-input").addEventListener("focusout", async 
 })
 
 
-//write event listener that looks at the quilljs text input, debounces
+
 let timer;
 
+//autosave when user typing stops
 quill.on('text-change', () => {
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -281,7 +289,7 @@ quill.on('text-change', () => {
     }, 500);
 });
 
-
+//autosave every 10 seconds
 quill.on('text-change', helper.throttle(() => {
     const delta = quill.getContents();
     const jsonDelta = JSON.stringify(delta);
@@ -294,3 +302,7 @@ quill.on('text-change', helper.throttle(() => {
     helper.refreshNotesUI();
 
 }, 10000));
+
+//to-do
+//when a new note is created, the editor should automatically open up to that note
+//when a note is selected the button of the note will change color making it easier for the user to know what button was clicked
