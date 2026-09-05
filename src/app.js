@@ -19,20 +19,32 @@ const quill = new Quill('#editor', {
 
 helper.initializeApp();
 
+
 //check for notes currently being viewed in the session
 const currentNoteInSession = sessionStorage.getItem("currentNoteViewingName");
 
+//update text editor whether or not a note is currently being viewed
 if(currentNoteInSession === null) {
     //write no note selected into the input name 
     const renameInput = document.getElementById("rename-note-input");
     renameInput.value = "No Note Selected";
-}else {
+
+    //insert an empty delta into the editor to clear the text editor
+    const emptyDelta = {
+        "ops": [
+            { "insert": "Create a note to start saving text" }
+        ]
+    };
+
+    quill.setContents(emptyDelta);
+}else {//note is currently  being viewed
     //display the current note name in the input
     const renameInput = document.getElementById("rename-note-input");
     renameInput.value = sessionStorage.getItem("currentNoteViewingName");
 
     //display the text from the notes content
     const targetNoteContent = await helper.getNote(currentNoteInSession);
+
     const delta = JSON.parse(targetNoteContent.content);
     
     quill.setContents(delta);
@@ -86,7 +98,6 @@ document.getElementById("scrollable-note-names").addEventListener("click", async
     if(buttonPressed.getAttribute("class") === "note-button") {
         //When a note name button is pressed, that notes name will be put into session storage
         const currentNoteSelectedName = buttonPressed.getAttribute("note");
-        //console.log(currentNoteSelectedName);
 
         //store the current note in session storage
         sessionStorage.setItem("currentNoteViewingName", currentNoteSelectedName);
@@ -100,8 +111,6 @@ document.getElementById("scrollable-note-names").addEventListener("click", async
         const delta = JSON.parse(targetNoteContent.content);
         
         quill.setContents(delta);
-
-        //console.log(delta);
 
     }else if(buttonPressed.getAttribute("class") === "delete-note-button"){
         //change attributes of the dialog to store the target note for deletion
@@ -150,6 +159,24 @@ document.getElementById("delete-note-button").addEventListener("click", async (e
         
         await helper.refreshNotesUI();
 
+        //if the current note in the session storage is targetNote, it is being viewed in the text editor
+        //if so then deleted that note from the session storage
+        if(targetNote === sessionStorage.getItem("currentNoteViewingName")) {
+            sessionStorage.removeItem("currentNoteViewingName");
+
+            //set renameNoteInput back to empty
+            const renameInput = document.getElementById("rename-note-input");
+            renameInput.value = "No Note Selected";
+
+            //insert an empty delta into the editor to clear the text editor
+            const emptyDelta = {
+                "ops": [
+                    { "insert": "Create a note to start saving text" }
+                ]
+            };
+
+            quill.setContents(emptyDelta);
+        }
     }catch(error) {
         console.error(error.message);
     }
@@ -162,17 +189,17 @@ document.getElementById("add-note-button").addEventListener("click", () => {
 })
 
 
-//event listener to create new note
+//event listener to create a new note
 document.getElementById("create-note-button").addEventListener("click", async (e) => {
     //get the current text that was written in the dialog text input
     let input = helper.getTextElementInput("create-note-input");
 
     const doNotesExist = await helper.doNotesExist(); //true if note exists false if none
 
-    //api call which returns true or fals for correct running
+    //api call which returns true or false for correct running
     let noteInputReturn = await helper.createNote(input);
     
-    if(noteInputReturn === false) {//note name trying to be created already exists
+    if(noteInputReturn === false) {//name of the note trying to be created already exists
 
         //show an error on the dialog by inserting an html element saying that this note already exists
         const noteExistsErrorMessage = document.querySelector("#create-note-dialog .dialog-body div");
@@ -183,15 +210,13 @@ document.getElementById("create-note-button").addEventListener("click", async (e
             errorMessage.textContent = "Note name already exists"
 
             container.appendChild(errorMessage);
-            
         }else {
-            
             return;
         }
 
     }else {//note created has a unique name
 
-        if(!doNotesExist) {//no notes currently exist
+        if(!doNotesExist) {//no notes currently exist. database is empty
             //close the dialog page
             helper.closeDialog("create-note-dialog");
 
@@ -223,11 +248,26 @@ document.getElementById("create-note-button").addEventListener("click", async (e
         if(duplicateNotesMessage != null) {
             duplicateNotesMessage.remove();
         }
-    }
 
+        //set the name of the note after creation
+        const renameInput = document.getElementById("rename-note-input");
+        renameInput.value = input;
+
+        //set the new note for the session storage
+        sessionStorage.setItem("currentNoteViewingName", input);
+
+        //create a delta and set the currentContent to that delta
+        const emptyDelta = {
+            "ops": [
+                { "insert": "\u200B" }
+            ]
+        };
+
+        quill.setContents(emptyDelta);
+    }
 })
 
-
+//text input to rename a note
 document.getElementById("rename-note-input").addEventListener("focusout", async (e) => {
     //check whether there is a note in session storage
     if(sessionStorage.getItem("currentNoteViewingName") == null) {
@@ -272,7 +312,6 @@ document.getElementById("rename-note-input").addEventListener("focusout", async 
 })
 
 
-
 let timer;
 
 //autosave when user typing stops
@@ -282,9 +321,15 @@ quill.on('text-change', () => {
 
         const delta = quill.getContents();
         const jsonDelta = JSON.stringify(delta);
+        const currentNoteInSession = sessionStorage.getItem("currentNoteViewingName")
 
-        //send the jsonDelta to the api
-        helper.modifyNoteContent(sessionStorage.getItem("currentNoteViewingName"), jsonDelta);
+        //check whether a note has been selected
+        if(currentNoteInSession == null) {//if there is no note in session, do nothing
+            return;
+        }else {//a note is currently in session and needs to be updated
+            //send the jsonDelta to the api
+            helper.modifyNoteContent(sessionStorage.getItem("currentNoteViewingName"), jsonDelta);
+        }
 
     }, 500);
 });
@@ -293,16 +338,21 @@ quill.on('text-change', () => {
 quill.on('text-change', helper.throttle(() => {
     const delta = quill.getContents();
     const jsonDelta = JSON.stringify(delta);
-    
-    //send the jsonDelta to the api
-    helper.modifyNoteContent(sessionStorage.getItem("currentNoteViewingName"), jsonDelta);
+    const currentNoteInSession = sessionStorage.getItem("currentNoteViewingName")
+
+    //check whether a note has been selected
+    if(currentNoteInSession == null) {//if there is no note in session, do nothing
+        return;
+    }else {//a note is currently in session and needs to be updated
+
+        //send the jsonDelta to the api
+        helper.modifyNoteContent(sessionStorage.getItem("currentNoteViewingName"), jsonDelta);
+    }
 
     //refresh the ui to show modified date
     helper.clearNoteListUI();
     helper.refreshNotesUI();
-
 }, 10000));
 
 //to-do
-//when a new note is created, the editor should automatically open up to that note
 //when a note is selected the button of the note will change color making it easier for the user to know what button was clicked
