@@ -543,7 +543,7 @@ note creation, note search, and note delete */
    width: 100%;      
    box-sizing: border-box;
 
-   height: 25px;
+   height: 32px;
 
    border-radius: 7px;
 
@@ -553,9 +553,8 @@ note creation, note search, and note delete */
 
    font-size: 25px;
    font-weight: bold;
-   color: white;
-   
-   -webkit-text-stroke: 1px black;
+
+   color: black;
 }
 
 
