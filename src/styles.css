@@ -134,7 +134,7 @@ note creation, note search, and note delete */
 
 
 #scrollable-note-names h6{
-   width: 200px;
+   width: 202px;
    
    padding: 0;
    margin: 0;
@@ -142,7 +142,7 @@ note creation, note search, and note delete */
 
    position: relative;
    bottom: 20px;
-   left: 125px;
+   left: 100px;
 }
 
 

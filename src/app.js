@@ -194,11 +194,19 @@ document.getElementById("create-note-button").addEventListener("click", async (e
     //get the current text that was written in the dialog text input
     let input = helper.getTextElementInput("create-note-input");
 
+    //Prevent note creation from empty note names
+    if(input.length === 0) {
+        return;
+    }else if(helper.isAllSpaces(input) === true) {
+        return;
+    }
+
     const doNotesExist = await helper.doNotesExist(); //true if note exists false if none
 
     //api call which returns true or false for correct running
     let noteInputReturn = await helper.createNote(input);
-    
+
+
     if(noteInputReturn === false) {//name of the note trying to be created already exists
 
         //show an error on the dialog by inserting an html element saying that this note already exists
@@ -266,6 +274,28 @@ document.getElementById("create-note-button").addEventListener("click", async (e
         quill.setContents(emptyDelta);
     }
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //text input to rename a note
 document.getElementById("rename-note-input").addEventListener("focusout", async (e) => {

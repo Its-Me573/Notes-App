@@ -356,3 +356,14 @@ export function throttle(func, delay) {
   };
 
 }
+
+export function isAllSpaces(string) {
+    //loop through entire string, if all white space return true else false
+    for(let i = 0; i < string.length; i++) {
+        if(string[i] != ' '){
+            return false;
+        }
+    }
+
+    return true;
+}
