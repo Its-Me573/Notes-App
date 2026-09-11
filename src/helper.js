@@ -2,7 +2,7 @@ import * as config from "../config.js";
 import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.4.1/dist/fuse.mjs'
 
 
-//api connection
+//GET api call: return all note names
 export async function returnAllNoteNames () {
     try {
         const url = config.baseURL + "/notes";
@@ -27,7 +27,7 @@ export async function returnAllNoteNames () {
 }
 
 
-//api delete note
+//DELETE api call: delete note
 export async function deleteNote (targetNote) {
     try {
         const url = config.baseURL + "/note/" + targetNote;
@@ -44,10 +44,10 @@ export async function deleteNote (targetNote) {
 }
 
 
-//api createNote
+//POST api call: create and add note
 export async function createNote (newNoteName) {
     try{
-        const url = config.baseURL + "/note/";
+        const url = config.baseURL + "/notes";
     
         const currentDate = getCurrentDateAndTime();
         
@@ -65,6 +65,34 @@ export async function createNote (newNoteName) {
             })
         })
         
+        //Note already exists
+        if(response.status === 400) {
+            return false;
+        }
+
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+    }catch(error) {
+        console.error(error.message);
+    }
+}
+
+
+//GET api call: get single note
+export async function getNote (targetNoteName) {
+    try {
+        const encodedNoteName = encodeURIComponent(targetNoteName)
+        const url = config.baseURL + "/note/" + encodedNoteName;
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "accept": "application/json",
+                "Content-Type": "application/json"
+            }
+        });
 
         if(response.status === 400) {
             
@@ -74,12 +102,87 @@ export async function createNote (newNoteName) {
         if (!response.ok) {
             throw new Error(`Response status: ${response.status}`);
         }
+        
+        const returningNote = await response.json();
+
+        return returningNote;
     }catch(error) {
         console.error(error.message);
     }
 }
 
 
+//PUT api call: modify note content
+export async function modifyNoteContent(targetNote, modifiedContent) {
+    try {
+        const url = config.baseURL + "/note/" + encodeURIComponent(targetNote) + "/modify";
+
+        const currentDate = getCurrentDateAndTime();
+
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+                "accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body:JSON.stringify({
+                content: modifiedContent,
+                date_modified: currentDate,
+            })
+        })
+
+
+        if(response.status === 400) {    
+            return false;
+        }
+
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+    }catch(error) {
+        console.error(error.message);
+    }
+}
+
+
+//PUT api call: rename note
+export async function renameNote(targetNote, newName) {
+    try {
+        const url = config.baseURL + "/note/" + encodeURIComponent(targetNote) + "/rename";
+
+        const currentDate = getCurrentDateAndTime();
+
+        const response = await fetch(url, {
+            method: "PUT",
+            headers: {
+                "accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body:JSON.stringify({
+                new_name: newName,
+                date_modified: currentDate,
+            })
+
+        })
+
+        //check whether the newName already exists
+        if(response.status == 409) {
+            return false;
+        }
+
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        return true;
+    }catch(error) {
+        console.error(error.message);
+    }
+}
+
+
+// Returns current date and time in MM/DD/YYYY H:MMAM/PM format, e.g. "8/20/2026 9:15PM"
 function getCurrentDateAndTime() {
     const date = new Date();
     const hours = date.getHours();
@@ -141,6 +244,7 @@ export function clearNoteListUI () {
 }
 
 
+//Loads elements into the scrollable list of notes
 export function renderList (listOfNotes) {
     try {
         listOfNotes.forEach((item) => {
@@ -226,6 +330,7 @@ export function getTextElementInput(textInputElementID) {
     return document.getElementById(textInputElementID).value;     
 }
 
+
 export async function doNotesExist() {
 
     const allNotes = await returnAllNoteNames();
@@ -237,3 +342,28 @@ export async function doNotesExist() {
     return true;
 }
 
+//listener that throttles input, saves every 7 seconds
+export function throttle(func, delay) {
+
+  let lastCall = 0;
+  
+  return function(...args) {
+    const now = Date.now();
+    if (now - lastCall >= delay) {
+      lastCall = now;
+      func.apply(this, args);
+    }
+  };
+
+}
+
+export function isAllSpaces(string) {
+    //loop through entire string, if all white space return true else false
+    for(let i = 0; i < string.length; i++) {
+        if(string[i] != ' '){
+            return false;
+        }
+    }
+
+    return true;
+}
